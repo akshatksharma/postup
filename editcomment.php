@@ -5,6 +5,8 @@ require "database.php";
 
 $postid = $_SESSION['currentPostID'];
 $commentid = $_GET["id"];
+
+echo $commentid;
 $comment = $_POST["commenttext"];
 
 $stmt = $mysqli->prepare("update comments set comment=? where id=?");
@@ -17,5 +19,5 @@ $stmt->bind_param('si', $comment, $commentid);
 $stmt->execute();
 $stmt->close();
 
-header('Location: post.php?id=' . $postid);
+// header('Location: post.php?id=' . $postid);
 exit;

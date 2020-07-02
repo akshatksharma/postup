@@ -1,80 +1,94 @@
+<?php
+session_id("user");
+session_start();
+require "database.php";
+
+$id =  $_GET["id"];
+$_SESSION['currentPostID'] = $id;
+$loggedUser = $_SESSION['user'];
+
+$stmt = $mysqli->prepare("select title, link, description, username, time from posts where id=?");
+
+if (!$stmt) {
+    printf("Query Prep Failed: %s\n", $mysqli->error);
+    exit;
+}
+
+$stmt->bind_param('i', $id);
+$stmt->execute();
+$stmt->bind_result($title, $link, $description, $username, $time);
+
+while ($stmt->fetch()) {
+}
+
+
+$stmt = $mysqli->prepare("select comment, username, id from comments where posts_id='{$id}'");
+if (!$stmt) {
+    printf("Query Prep Failed: %s\n", $mysqli->error);
+    exit;
+}
+$stmt->execute();
+$stmt->bind_result($comment, $username, $commentid);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title><?php echo htmlspecialchars($title)  ?> </title>
+    <link rel="stylesheet" href="./styles/resetstyles.css" />
+
 </head>
 
 <body>
-    <?php
-    session_id("user");
-    session_start();
-    require "database.php";
+    <div class="page">
+        <a href="home.php">Go back</a>
+        <div class="post">
+            <div class="post__content">
+                <h1 class='post__title'> <?php echo htmlspecialchars($title); ?> </h1>
+                <div class='post__link'> <?php echo htmlspecialchars($link); ?> </div>
+                <div class='post__user'>Posted by <?php echo htmlspecialchars($username); ?> at <?php echo htmlspecialchars($time) ?> </div>
+                <div class='post__text'> <?php echo htmlspecialchars($description); ?> </div>
+                <?php if ($username == $loggedUser) { ?>
+                    <button class="edit--post">Edit</button>
+                    <form method="GET" action="deletepost.php?">
+                        <button type="submit" class="delete--post">X</button>
+                    </form>
 
-    $id =  $_GET["id"];
-    $_SESSION['currentPostID'] = $id;
-    $loggedUser = $_SESSION['user'];
+                <?php }; ?>
 
-    $stmt = $mysqli->prepare("select title, link, description, username, time from posts where id=?");
+            </div>
 
-    if (!$stmt) {
-        printf("Query Prep Failed: %s\n", $mysqli->error);
-        exit;
-    }
+            <div class="post__addcomment">
+                <form action="addcomment.php" method="post">
+                    <textarea name="commentText" placeholder="Comment here"></textarea>
+                    <input type="submit" value="comment">
+                </form>
+            </div>
 
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $stmt->bind_result($title, $link, $description, $username, $time);
-
-    while ($stmt->fetch()) {
-    }
-
-
-    $stmt = $mysqli->prepare("select comment, username, id from comments where posts_id='{$id}'");
-    if (!$stmt) {
-        printf("Query Prep Failed: %s\n", $mysqli->error);
-        exit;
-    }
-    $stmt->execute();
-    $stmt->bind_result($comment, $username, $commentid);
-
-    $isLoggedUser = $username == $loggedUser;
-
-    ?>
-
-
-
-    <a href="home.php">Go back</a>
-    <div class="post">
-        <div class="post__content">
-            <h1 class='post__title'> <?php echo htmlspecialchars($title); ?> </h1>
-            <div class='post__link'> <?php echo htmlspecialchars($link); ?> </div>
-            <div class='post__user'>Posted by <?php echo htmlspecialchars($username); ?> at <?php echo htmlspecialchars($time) ?> </div>
-            <div class='post__text'> <?php echo htmlspecialchars($description); ?> </div>
-        </div>
-`
-        <div class="post__addcomment">
-            <form action="addcomment.php" method="post">
-                <textarea name="commentText" placeholder="Comment here"></textarea>
-                <input type="submit" value="comment">
-            </form>
+            <div class="comments">
+                <h2>Comments</h2>
+                <?php while ($stmt->fetch()) { ?>
+                    <div id=<?php echo htmlspecialchars($commentid); ?> class='comment'>
+                        <p class='comment__name'> <?php echo htmlspecialchars($username); ?> </p>
+                        <p class='comment__text'> <?php echo htmlspecialchars($comment); ?> </p>
+                        <?php if ($username == $loggedUser) { ?>
+                            <button class="edit--comment">Edit</button>
+                            <form method="GET" action="deletecomment.php?">
+                                <button type="submit" class="delete--comment">X</button>
+                                <input type='hidden' name='id' value='<?php echo "$commentid"; ?>' />
+                            </form>
+                        <?php }; ?>
+                    </div>
+                <?php }; ?>
+            </div>
         </div>
 
-        <div class="comments">
-            <h2>Comments</h2>
-            <?php while ($stmt->fetch()) { ?>
-                <div id=<?php echo htmlspecialchars($commentid); ?> class='comment'>
-                    <p class='comment__name'> <?php echo htmlspecialchars($username); ?> </p>
-                    <p class='comment__text'> <?php echo htmlspecialchars($comment); ?> </p>
-                    <?php if ($isLoggedUser) { ?>
-                        <button class="edit--button">Edit</button>
-                    <?php }; ?>
-                </div>
-            <?php }; ?>
-        </div>
     </div>
+
 </body>
 <script>
     const postEditButton = document.getElementsByClassName("edit--post")[0];
