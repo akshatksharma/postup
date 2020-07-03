@@ -22,13 +22,13 @@ while ($stmt->fetch()) {
 }
 
 
-$stmt = $mysqli->prepare("select comment, username, id from comments where posts_id='{$id}'");
-if (!$stmt) {
+$stmt2 = $mysqli->prepare("select comment, username, id from comments where posts_id='{$id}'");
+if (!$stmt2) {
     printf("Query Prep Failed: %s\n", $mysqli->error);
     exit;
 }
-$stmt->execute();
-$stmt->bind_result($comment, $username, $commentid);
+$stmt2->execute();
+$stmt2->bind_result($comment, $commentUsername, $commentid);
 ?>
 
 
@@ -71,11 +71,11 @@ $stmt->bind_result($comment, $username, $commentid);
 
             <div class="comments">
                 <h2>Comments</h2>
-                <?php while ($stmt->fetch()) { ?>
+                <?php while ($stmt2->fetch()) { ?>
                     <div id=<?php echo htmlspecialchars($commentid); ?> class='comment'>
-                        <p class='comment__name'> <?php echo htmlspecialchars($username); ?> </p>
+                        <p class='comment__name'> <?php echo htmlspecialchars($commentUsername); ?> </p>
                         <p class='comment__text'> <?php echo htmlspecialchars($comment); ?> </p>
-                        <?php if ($username == $loggedUser) { ?>
+                        <?php if ($commentUsername == $loggedUser) { ?>
                             <button class="edit--comment">Edit</button>
                             <form method="GET" action="deletecomment.php?">
                                 <button type="submit" class="delete--comment">X</button>
@@ -91,35 +91,38 @@ $stmt->bind_result($comment, $username, $commentid);
 
 </body>
 <script>
-    const postEditButton = document.getElementsByClassName("edit--post")[0];
+    try {
+        const postEditButton = document.getElementsByClassName("edit--post")[0];
 
-    postEditButton.addEventListener('click', event => {
-        const post = event.target.parentElement;
-        const postText = post.getElementsByClassName("post__text")[0];
+        postEditButton.addEventListener('click', event => {
+            const post = event.target.parentElement;
+            const postText = post.getElementsByClassName("post__text")[0];
 
-        const form = document.createElement("FORM");
-        form.setAttribute('method', "post");
-        form.setAttribute('action', "editpost.php");
+            const form = document.createElement("FORM");
+            form.setAttribute('method', "post");
+            form.setAttribute('action', "editpost.php");
 
-        const i = document.createElement("input"); //input element, text
-        i.setAttribute('value', postText.innerHTML);
-        i.setAttribute('type', "textarea");
-        i.setAttribute('name', "posttext");
+            const i = document.createElement("input"); //input element, text
+            i.setAttribute('value', postText.innerHTML);
+            i.setAttribute('type', "textarea");
+            i.setAttribute('name', "posttext");
 
-        const s = document.createElement("input"); //input element, Submit button
-        s.setAttribute('type', "submit");
-        s.setAttribute('value', "done");
+            const s = document.createElement("input"); //input element, Submit button
+            s.setAttribute('type', "submit");
+            s.setAttribute('value', "done");
 
-        form.appendChild(i);
-        form.appendChild(s);
+            form.appendChild(i);
+            form.appendChild(s);
 
-        post.replaceChild(form, postText);
-    })
+            post.replaceChild(form, postText);
+        })
+    } catch (error) {}
 
     const commentEditButtons = document.getElementsByClassName("edit--comment");
 
     for (let i = 0; i < commentEditButtons.length; i++) {
         const item = commentEditButtons[i];
+        console.log("helll");
 
         item.addEventListener('click', event => {
             const comment = event.target.parentElement;
