@@ -4,6 +4,14 @@ session_start();
 require "database.php";
 
 $postid = $_SESSION['currentPostID'];
+$formToken = $_POST['token'];
+echo $formToken;
+
+// printf("formtoken: %s, usertoken: %s", $formToken, $_SESSION['token']);
+
+if (!hash_equals($_SESSION['token'], $_POST['token'])) {
+    die("Request forgery detected");
+}
 
 $stmt = $mysqli->prepare("delete from comments where posts_id=?");
 if (!$stmt) {

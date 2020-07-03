@@ -15,15 +15,23 @@
     session_start();
     ?>
     <div>
-        <button class="button button--login">Login</button>
-        <button class="button button--signup">Signup</button>
-        <form action="logout.php">
-            <button class="button button--logout">Logout</button>
-        </form>
+        <?php if (empty($_SESSION['userid'])) { ?>
+            <button class="button button--login">Login</button>
+            <button class="button button--signup">Signup</button>
+        <?php } else { ?>
+            <form class="form" action="logout.php">
+                <button class="button button--logout">Logout</button>
+            </form>
+        <?php } ?>
     </div>
-    <div> <?php echo empty($_SESSION['user']) ? "" :  $_SESSION['user'] ?></div>
-    <a href=" addpost.php">Submit</a>
+    <?php echo empty($_SESSION['status']) ? "" : $_SESSION['status'] ?>
+
+    <div> <?php echo empty($_SESSION['username']) ? "" :  $_SESSION['username'] ?></div>
+
     <div class="page">
+        <?php if (!empty($_SESSION['userid'])) { ?>
+            <a href=" addpost.php">Submit a Post</a>
+        <?php } ?>
         <?php include 'posts.php' ?>
     </div>
 

@@ -5,9 +5,11 @@ require "database.php";
 
 $id =  $_GET["id"];
 $_SESSION['currentPostID'] = $id;
-$loggedUser = $_SESSION['user'];
+$loggedUser = empty($_SESSION['userid']) ? "" :  $_SESSION['userid'];
 
-$stmt = $mysqli->prepare("select title, link, description, username, time from posts where id=?");
+
+// querying post table 
+$stmt = $mysqli->prepare("select title, link, description, username, userid, time from posts where id=?");
 
 if (!$stmt) {
     printf("Query Prep Failed: %s\n", $mysqli->error);
@@ -16,19 +18,19 @@ if (!$stmt) {
 
 $stmt->bind_param('i', $id);
 $stmt->execute();
-$stmt->bind_result($title, $link, $description, $username, $time);
+$stmt->bind_result($title, $link, $description, $username, $userid, $time);
 
 while ($stmt->fetch()) {
 }
 
-
-$stmt2 = $mysqli->prepare("select comment, username, id from comments where posts_id='{$id}'");
+// querying comment table 
+$stmt2 = $mysqli->prepare("select id, userid, username, comment from comments where posts_id='{$id}'");
 if (!$stmt2) {
     printf("Query Prep Failed: %s\n", $mysqli->error);
     exit;
 }
 $stmt2->execute();
-$stmt2->bind_result($comment, $commentUsername, $commentid);
+$stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
 ?>
 
 
@@ -52,10 +54,11 @@ $stmt2->bind_result($comment, $commentUsername, $commentid);
                 <div class='post__link'> <?php echo htmlspecialchars($link); ?> </div>
                 <div class='post__user'>Posted by <?php echo htmlspecialchars($username); ?> at <?php echo htmlspecialchars($time) ?> </div>
                 <div class='post__text'> <?php echo htmlspecialchars($description); ?> </div>
-                <?php if ($username == $loggedUser) { ?>
+                <?php if ($userid == $loggedUser) { ?>
                     <button class="edit--post">Edit</button>
-                    <form method="GET" action="deletepost.php?">
+                    <form method="post" action="deletepost.php?">
                         <button type="submit" class="delete--post">X</button>
+                        <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
                     </form>
 
                 <?php }; ?>
@@ -63,10 +66,16 @@ $stmt2->bind_result($comment, $commentUsername, $commentid);
             </div>
 
             <div class="post__addcomment">
-                <form action="addcomment.php" method="post">
-                    <textarea name="commentText" placeholder="Comment here"></textarea>
-                    <input type="submit" value="comment">
-                </form>
+                <?php if (!empty($_SESSION['userid'])) { ?>
+                    <form action="addcomment.php" method="post">
+                        <textarea name="commentText" placeholder="Comment here"></textarea>
+                        <input type="submit" value="comment">
+                        <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+                    </form>
+                <?php } else { ?>
+                    <textarea name="commentText" placeholder="Login to comment" readonly></textarea>
+                <?php } ?>
+
             </div>
 
             <div class="comments">
@@ -75,11 +84,12 @@ $stmt2->bind_result($comment, $commentUsername, $commentid);
                     <div id=<?php echo htmlspecialchars($commentid); ?> class='comment'>
                         <p class='comment__name'> <?php echo htmlspecialchars($commentUsername); ?> </p>
                         <p class='comment__text'> <?php echo htmlspecialchars($comment); ?> </p>
-                        <?php if ($commentUsername == $loggedUser) { ?>
+                        <?php if ($commentUserid == $loggedUser) { ?>
                             <button class="edit--comment">Edit</button>
-                            <form method="GET" action="deletecomment.php?">
+                            <form method="post" action="deletecomment.php?">
                                 <button type="submit" class="delete--comment">X</button>
                                 <input type='hidden' name='id' value='<?php echo "$commentid"; ?>' />
+                                <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
                             </form>
                         <?php }; ?>
                     </div>
@@ -109,10 +119,17 @@ $stmt2->bind_result($comment, $commentUsername, $commentid);
 
             const s = document.createElement("input"); //input element, Submit button
             s.setAttribute('type', "submit");
+            s.setAttribute("name", "editPost")
             s.setAttribute('value', "done");
+
+            const h = document.createElement("input"); //input element, Submit button
+            h.setAttribute('type', "hidden");
+            h.setAttribute('name', "token");
+            h.setAttribute('value', "<?php echo $_SESSION['token']; ?>");
 
             form.appendChild(i);
             form.appendChild(s);
+            form.appendChild(h);
 
             post.replaceChild(form, postText);
         })
@@ -142,10 +159,17 @@ $stmt2->bind_result($comment, $commentUsername, $commentid);
             s.setAttribute('type', "submit");
             s.setAttribute('value', "done");
 
-            commentText.remove();
-            event.target.remove();
+            const h = document.createElement("input"); //input element, Submit button
+            h.setAttribute('type', "hidden");
+            h.setAttribute('name', "token");
+            h.setAttribute('value', "<?php echo $_SESSION['token']; ?>");
+
             form.appendChild(i);
             form.appendChild(s);
+            form.appendChild(h);
+
+            commentText.remove();
+            event.target.remove();
             comment.appendChild(form);
         })
 

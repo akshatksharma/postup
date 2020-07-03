@@ -3,6 +3,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-size: 16px;
 }
 
 /* Remove default padding */
@@ -10,7 +11,6 @@ ul[class],
 ol[class] {
   padding: 0;
 }
-
 /* Remove default margin */
 body,
 h1,
@@ -27,19 +27,6 @@ blockquote,
 dl,
 dd {
   margin: 0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-div {
-  font-family: "Karla", sans-serif;
-  font-size: 1rem;
 }
 
 /* Set core body defaults */
@@ -84,6 +71,10 @@ select {
 
 input[type="checkbox"] {
   display: none;
+}
+
+form {
+  display: inline-block;
 }
 
 /* Remove all animations and transitions for people that prefer not to see them */

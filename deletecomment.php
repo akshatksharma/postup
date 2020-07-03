@@ -6,8 +6,11 @@ session_start();
 require "database.php";
 
 $postid = $_SESSION['currentPostID'];
-$commentid = $_GET["id"];
+$commentid = $_POST["id"];
 
+if (!hash_equals($_SESSION['token'], $_POST['token'])) {
+    die("Request forgery detected");
+}
 
 
 $stmt = $mysqli->prepare("delete from comments where id=?");

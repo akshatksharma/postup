@@ -6,19 +6,23 @@ require "database.php";
 
 
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
     $title = $_POST['postTitle'];
     $link = $_POST['postLink'];
     $text = $_POST['postText'];
     $time = time();
 
-    $stmt = $mysqli->prepare("insert into posts (username, title, link, description, time) values (?,?,?,?,?)");
+    if (!hash_equals($_SESSION['token'], $_POST['token'])) {
+        die("Request forgery detected");
+    }
+
+    $stmt = $mysqli->prepare("insert into posts (username, userid, title, link, description, time) values (?,?,?,?,?,?)");
     if (!$stmt) {
         printf("Query Prep Failed: %s\n", $mysqli->error);
         exit;
     }
 
-    $stmt->bind_param('ssssi', $_SESSION['user'], $title, $link, $text, $time);
+    $stmt->bind_param('sisssi', $_SESSION['username'], $_SESSION['userid'], $title, $link, $text, $time);
     $stmt->execute();
     $stmt->close();
 
@@ -45,6 +49,7 @@ if (isset($_POST['submit'])) {
         <input type="text" name="postLink" placeholder="Link" />
         <textarea type="text" name="postText" placeholder="Write here"></textarea>
         <input type="submit" name="submit" value="Post" />
+        <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
     </form>
 
 </body>
