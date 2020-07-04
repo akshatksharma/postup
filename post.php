@@ -56,7 +56,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
                 <div class='post__text'> <?php echo htmlspecialchars($description); ?> </div>
                 <?php if ($userid == $loggedUser) { ?>
                     <button class="edit--post">Edit</button>
-                    <form method="post" action="deletepost.php?">
+                    <form method="post" action="./functions/delete/deletepost.php?">
                         <button type="submit" class="delete--post">X</button>
                         <input type='hidden' name='userid' value='<?php echo "$userid"; ?>' />
                         <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
@@ -68,7 +68,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
 
             <div class="post__addcomment">
                 <?php if (!empty($_SESSION['userid'])) { ?>
-                    <form action="addcomment.php" method="post">
+                    <form action="./functions/create/addcomment.php" method="post">
                         <textarea name="commentText" placeholder="Comment here"></textarea>
                         <input type="submit" value="comment">
                         <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
@@ -87,7 +87,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
                         <p class='comment__text'> <?php echo htmlspecialchars($comment); ?> </p>
                         <?php if ($commentUserid == $loggedUser) { ?>
                             <button class="edit--comment">Edit</button>
-                            <form method="post" action="deletecomment.php?">
+                            <form method="post" action="./functions/delete/deletecomment.php?">
                                 <button type="submit" class="delete--comment">X</button>
                                 <input type='hidden' name='id' value='<?php echo "$commentid"; ?>' />
                                 <input type='hidden' name='userid' value='<?php echo "$commentUserid"; ?>' />
@@ -112,7 +112,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
 
             const form = document.createElement("FORM");
             form.setAttribute('method', "post");
-            form.setAttribute('action', "editpost.php");
+            form.setAttribute('action', "./functions/update/editpost.php");
 
             const i = document.createElement("input"); //input element, text
             i.setAttribute('value', postText.innerHTML);
@@ -150,7 +150,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
 
             const form = document.createElement("FORM");
             form.setAttribute('method', "post");
-            form.setAttribute('action', "editcomment.php?id=" + commentid);
+            form.setAttribute('action', "./functions/update/editcomment.php?id=" + commentid);
 
             const i = document.createElement("input"); //input element, text
             i.setAttribute('value', commentText.innerHTML);

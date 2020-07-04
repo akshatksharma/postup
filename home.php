@@ -19,7 +19,7 @@
             <button class="button button--login">Login</button>
             <button class="button button--signup">Signup</button>
         <?php } else { ?>
-            <form class="form" action="logout.php">
+            <form class="form" action="./auth/logout.php">
                 <button class="button button--logout">Logout</button>
             </form>
         <?php } ?>
@@ -30,7 +30,7 @@
 
     <div class="page">
         <?php if (!empty($_SESSION['userid'])) { ?>
-            <a href=" addpost.php">Submit a Post</a>
+            <a href="./functions/create/addpost.php">Submit a Post</a>
         <?php } ?>
         <?php include 'posts.php' ?>
     </div>
@@ -43,7 +43,7 @@
                 <h2>Signup</h2>
             </div>
             <div class="modal-body">
-                <form method="post" action="signup.php">
+                <form method="post" action="./auth/signup.php">
                     <input type="text" name="username" placeholder="username" />
                     <input type="password" name="password" placeholder="password" />
                     <button type="submit">Signup</button>
@@ -60,7 +60,7 @@
                 <h2>Login</h2>
             </div>
             <div class="modal-body">
-                <form method="post" action="login.php">
+                <form method="post" action="./auth/login.php">
                     <input type="text" name="username" placeholder="username" />
                     <input type="password" name="password" placeholder="password" />
                     <button type="submit">Login</button>
