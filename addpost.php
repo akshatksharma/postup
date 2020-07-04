@@ -7,9 +7,9 @@ require "database.php";
 
 
 if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
-    $title = $_POST['postTitle'];
-    $link = $_POST['postLink'];
-    $text = $_POST['postText'];
+    $title = (string) $_POST['postTitle'];
+    $link = (string) $_POST['postLink'];
+    $text = (string) $_POST['postText'];
     $time = time();
 
     if (!hash_equals($_SESSION['token'], $_POST['token'])) {

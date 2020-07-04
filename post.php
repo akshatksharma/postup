@@ -58,6 +58,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
                     <button class="edit--post">Edit</button>
                     <form method="post" action="deletepost.php?">
                         <button type="submit" class="delete--post">X</button>
+                        <input type='hidden' name='userid' value='<?php echo "$userid"; ?>' />
                         <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
                     </form>
 
@@ -89,6 +90,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
                             <form method="post" action="deletecomment.php?">
                                 <button type="submit" class="delete--comment">X</button>
                                 <input type='hidden' name='id' value='<?php echo "$commentid"; ?>' />
+                                <input type='hidden' name='userid' value='<?php echo "$commentUserid"; ?>' />
                                 <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
                             </form>
                         <?php }; ?>
@@ -122,7 +124,7 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
             s.setAttribute("name", "editPost")
             s.setAttribute('value', "done");
 
-            const h = document.createElement("input"); //input element, Submit button
+            const h = document.createElement("input"); //input element, token button
             h.setAttribute('type', "hidden");
             h.setAttribute('name', "token");
             h.setAttribute('value', "<?php echo $_SESSION['token']; ?>");
@@ -139,9 +141,9 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
 
     for (let i = 0; i < commentEditButtons.length; i++) {
         const item = commentEditButtons[i];
-        console.log("helll");
 
         item.addEventListener('click', event => {
+            console.log("hello");
             const comment = event.target.parentElement;
             const commentText = comment.getElementsByClassName("comment__text")[0];
             const commentid = comment.id;
@@ -159,10 +161,12 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
             s.setAttribute('type', "submit");
             s.setAttribute('value', "done");
 
-            const h = document.createElement("input"); //input element, Submit button
+
+            const h = document.createElement("input"); //input element, token button
             h.setAttribute('type', "hidden");
             h.setAttribute('name', "token");
             h.setAttribute('value', "<?php echo $_SESSION['token']; ?>");
+
 
             form.appendChild(i);
             form.appendChild(s);
