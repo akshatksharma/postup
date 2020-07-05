@@ -11,6 +11,8 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
     $text = (string) $_POST['postText'];
     $time = (string) $_POST['postTime'];
 
+    echo $time;
+
     if (!hash_equals($_SESSION['token'], $_POST['token'])) {
         die("Request forgery detected");
     }
@@ -21,7 +23,7 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
         exit;
     }
 
-    $stmt->bind_param('sisssi', $_SESSION['username'], $_SESSION['userid'], $title, $link, $text, $time);
+    $stmt->bind_param('sissss', $_SESSION['username'], $_SESSION['userid'], $title, $link, $text, $time);
     $stmt->execute();
     $stmt->close();
 
