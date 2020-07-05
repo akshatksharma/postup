@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Postup</title>
+    <link rel="stylesheet" href="https://use.typekit.net/jyw0vop.css" />
     <link rel="stylesheet" href="./styles/home.css" />
     <link rel="stylesheet" href="./styles/resetstyles.css" />
 </head>
@@ -14,40 +15,52 @@
     session_id("user");
     session_start();
     ?>
-    <div>
+    <div class="authbar">
         <?php if (empty($_SESSION['userid'])) { ?>
             <button class="button button--login">Login</button>
             <button class="button button--signup">Signup</button>
         <?php } else { ?>
-            <form class="form" action="./auth/logout.php">
+            <form class="form form--auth" action="./auth/logout.php">
                 <button class="button button--logout">Logout</button>
             </form>
+            <p><?php echo empty($_SESSION['username']) ? "" :  $_SESSION['username'] ?></p>
         <?php } ?>
     </div>
-    <?php echo empty($_SESSION['status']) ? "" : $_SESSION['status'] ?>
-
-    <div> <?php echo empty($_SESSION['username']) ? "" :  $_SESSION['username'] ?></div>
-
     <div class="page">
-        <?php if (!empty($_SESSION['userid'])) { ?>
-            <a href="./functions/create/addpost.php">Submit a Post</a>
-        <?php } ?>
+        <?php echo empty($_SESSION['status']) ? null : $_SESSION['status'] ?>
+        <div class="page__header">
+            <div class="page__title">Posts</div>
+            <?php if (!empty($_SESSION['userid'])) { ?>
+                <form class="form" action="./functions/create/addpost.php">
+                    <button class="button">Submit a Post</button>
+                </form>
+            <?php } ?>
+        </div>
         <?php include 'posts.php' ?>
+
     </div>
+
+
+    <!-- sliding modals from w3schools.com -->
 
 
     <div class="modal modal--signup">
         <div class="modal__content">
             <div class="modal__header">
-                <span class="close close--signup">&times;</span>
-                <h2>Signup</h2>
+                <div class="close">
+                    <svg class="close__button close__button--signup" viewBox=" 0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="_14dkERGUnSwisNWFcFX-0T">
+                        <polygon fill="inherit" points="11.649 9.882 18.262 3.267 16.495 1.5 9.881 8.114 3.267 1.5 1.5 3.267 8.114 9.883 1.5 16.497 3.267 18.264 9.881 11.65 16.495 18.264 18.262 16.497"></polygon>
+                    </svg>
+                </div>
+                <h2 class="header__title">Signup</h2>
             </div>
-            <div class="modal-body">
-                <form method="post" action="./auth/signup.php">
-                    <input type="text" name="username" placeholder="username" />
-                    <input type="password" name="password" placeholder="password" />
+            <div class="modal__body">
+                <form class="form" method="post" action="./auth/signup.php">
+                    <div class="form__inputs">
+                        <input type="text" name="username" placeholder="username" />
+                        <input type="password" name="password" placeholder="password" />
+                    </div>
                     <button type="submit">Signup</button>
-                    <!-- <input type="password" placeholder="confirm password" /> -->
                 </form>
             </div>
         </div>
@@ -56,13 +69,19 @@
     <div class="modal modal--login">
         <div class="modal__content">
             <div class="modal__header">
-                <span class="close close--login">&times;</span>
-                <h2>Login</h2>
+                <div class="close">
+                    <svg class="close__button close__button--login" viewBox=" 0 0 20 20" xmlns="http://www.w3.org/2000/svg" class="_14dkERGUnSwisNWFcFX-0T">
+                        <polygon fill="inherit" points="11.649 9.882 18.262 3.267 16.495 1.5 9.881 8.114 3.267 1.5 1.5 3.267 8.114 9.883 1.5 16.497 3.267 18.264 9.881 11.65 16.495 18.264 18.262 16.497"></polygon>
+                    </svg>
+                </div>
+                <h2 class="header__title">Login</h2>
             </div>
-            <div class="modal-body">
-                <form method="post" action="./auth/login.php">
-                    <input type="text" name="username" placeholder="username" />
-                    <input type="password" name="password" placeholder="password" />
+            <div class="modal__body">
+                <form class="form" method="post" action="./auth/login.php">
+                    <div class="form__inputs">
+                        <input type="text" name="username" placeholder="username" />
+                        <input type="password" name="password" placeholder="password" />
+                    </div>
                     <button type="submit">Login</button>
                 </form>
             </div>
@@ -72,11 +91,11 @@
 <script>
     const signupModal = document.getElementsByClassName("modal--signup")[0];
     const signupOpen = document.getElementsByClassName("button--signup")[0];
-    const signupClose = document.getElementsByClassName("close--signup")[0];
+    const signupClose = document.getElementsByClassName("close__button--signup")[0];
 
     const loginModal = document.getElementsByClassName("modal--login")[0];
     const loginOpen = document.getElementsByClassName("button--login")[0];
-    const loginClose = document.getElementsByClassName("close--login")[0];
+    const loginClose = document.getElementsByClassName("close__button--login")[0];
 
 
     signupOpen.addEventListener('click', event => {

@@ -61,7 +61,6 @@ $stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
                         <input type='hidden' name='userid' value='<?php echo "$userid"; ?>' />
                         <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
                     </form>
-
                 <?php }; ?>
 
             </div>
