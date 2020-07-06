@@ -1,0 +1,116 @@
+* {
+  font-family: "proxima-nova", sans-serif !important;
+}
+
+.button {
+  padding: 5px 10px;
+  background-color: #e2e8f0;
+}
+
+.button:hover,
+.button:focus {
+  background: #cbd5e0;
+}
+
+.button:focus {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
+}
+
+.button:active {
+  transform: scale(0.99);
+}
+
+.page {
+  width: 100%;
+  min-height: calc(100vh - 25px);
+  margin: 0px auto;
+  padding: 0px 25px;
+}
+
+.page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 25px 0px;
+}
+
+.page__title {
+  font-size: calc(36px + (48 - 36) * ((100vw - 640px) / (1280 - 640)));
+  line-height: calc(1.3em + (1.5 - 1.3) * ((100vw - 300px) / (1600 - 300)));
+  font-weight: 700;
+}
+
+.authbar {
+  display: flex;
+  height: 50px;
+  padding: 5px 25px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+}
+.authbar p {
+  margin-right: 10px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form__inputs {
+  display: grid;
+  grid-auto-flow: row;
+  grid-gap: 9px;
+  margin: 25px 0px;
+}
+
+.form__inputs input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid #cbd5e0;
+}
+
+textarea {
+  resize: vertical;
+  padding: 10px;
+  border: none;
+  border-bottom: 1px solid #cbd5e0;
+}
+
+/* Small (mdsm) */
+@media (min-width: 640px) {
+  .page {
+    max-width: 640px;
+    height: 100%;
+  }
+}
+
+/* Medium (md) */
+@media (min-width: 768px) {
+  .page {
+    max-width: 768px;
+    height: 100%;
+  }
+}
+
+/* Large (lg) */
+@media (min-width: 1024px) {
+  .page {
+    max-width: 1024px;
+    height: 100%;
+  }
+}
+
+/* Extra Large (xl) */
+@media (min-width: 1280px) {
+  .page {
+    max-width: 1280px;
+    height: 100%;
+  }
+}
