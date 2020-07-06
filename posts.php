@@ -11,16 +11,22 @@ $stmt->execute();
 $stmt->bind_result($username, $title, $link, $id, $time);
 ?>
 
-<div class="posts flow">
+<div class="posts">
     <?php
     while ($stmt->fetch()) {
     ?>
         <div class="post">
-
-            <a class="post__link" href=//<?php echo htmlspecialchars($link) ?>><?php echo htmlspecialchars($title) ?> </a> <div class="post__userinfo">posted by <?php echo htmlspecialchars($username) ?> at <?php echo htmlspecialchars($time) ?></div>
-        <form method="get" action='post.php'>
-            <button type="submit" class="post__discussion">View</button>
-            <input type='hidden' name='id' value='<?php echo $id; ?>' />
+            <form method="get" action='post.php'>
+                <button type="submit" class="post__content">
+                    <?php if ($link == "") { ?>
+                        <a class="post__link" href="post.php?id=<?php echo $id; ?>"><?php echo htmlspecialchars($title) ?></a>
+                    <?php } else { ?>
+                        <a class="post__link" href=//<?php echo htmlspecialchars($link) ?>><?php echo htmlspecialchars($title) ?> </a> 
+                        <?php } ?>
+                         <div class="post__user">posted by <?php echo htmlspecialchars($username) ?> at <?php echo htmlspecialchars($time) ?>
+        </div>
+        </button>
+        <input type='hidden' name='id' value='<?php echo $id; ?>' />
         </form>
 
 </div>

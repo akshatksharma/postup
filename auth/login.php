@@ -19,13 +19,18 @@ $stmt->bind_result($passwordHash, $userid);
 $stmt->fetch();
 
 if (password_verify($passwordGuess, $passwordHash)) {
+
     $_SESSION['userid'] = $userid;
     $_SESSION['username'] = $username;
     $_SESSION['token'] = bin2hex(random_bytes(32));
     $_SESSION['status'] = "";
+
+
 } else {
     $_SESSION['status'] = "Incorrect username or password";
 };
+
+$stmt->close();
 
 header('Location: ../home.php');
 exit;

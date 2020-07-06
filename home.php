@@ -24,7 +24,7 @@
                 <button class="button button--login">Login</button>
                 <button class="button button--signup">Signup</button>
             <?php } else { ?>
-                <form class="form form--auth" action="../../auth/logout.php">
+                <form class="form form--auth" action="./auth/logout.php">
                     <button class="button button--logout">Logout</button>
                 </form>
 
