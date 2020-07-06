@@ -1,0 +1,13 @@
+.page--addpost {
+  width: 100%;
+  padding: 25px;
+}
+
+.form {
+  max-width: 700px;
+}
+
+textarea {
+  min-height: 250px;
+  max-width: 100%;
+}

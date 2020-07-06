@@ -11,8 +11,6 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
     $text = (string) $_POST['postText'];
     $time = (string) $_POST['postTime'];
 
-    echo $time;
-
     if (!hash_equals($_SESSION['token'], $_POST['token'])) {
         die("Request forgery detected");
     }
@@ -42,6 +40,7 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add post</title>
+    <link rel="stylesheet" href="https://use.typekit.net/jyw0vop.css" />
     <link rel="stylesheet" href="../../styles/resetstyles.css" />
     <link rel="stylesheet" href="../../styles/styles.css" />
     <link rel="stylesheet" href="../../styles/addpost.css" />
@@ -62,14 +61,13 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
 
             <?php } ?>
         </div>
-
     </div>
     <div class="page page--addpost">
 
         <div class="page__title">Add a post</div>
         <form class="form form--addpost" action="#" method="post">
             <div class="form__inputs">
-                <input type="text" name="postTitle" placeholder="Title" />
+                <input type="text" name="postTitle" placeholder="Title *" required />
                 <input type="text" name="postLink" placeholder="Link" />
                 <textarea type="text" name="postText" placeholder="Write here"></textarea>
             </div>
@@ -84,7 +82,7 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
 <script>
     const getTime = () => {
         const today = new Date();
-        const hours = today.getHours() - 12;
+        const hours = today.getHours() > 12 ? today.getHours() - 12 : today.getHours();
         const minutes =
             today.getMinutes() < 10 ? `0${today.getMinutes()}` : today.getMinutes();
         const meridiem = today.getHours() > 12 ? " PM" : " AM";
