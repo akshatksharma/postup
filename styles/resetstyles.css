@@ -86,7 +86,8 @@ form {
   display: inline-block;
 }
 
-button {
+button,
+input[type="submit"] {
   display: inline-block;
   border: none;
   margin: 0;
@@ -96,7 +97,6 @@ button {
   transition: background 250ms ease-in-out, transform 150ms ease;
   -webkit-appearance: none;
   -moz-appearance: none;
-}
 }
 
 /* Remove all animations and transitions for people that prefer not to see them */

@@ -6,8 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Postup</title>
     <link rel="stylesheet" href="https://use.typekit.net/jyw0vop.css" />
-    <link rel="stylesheet" href="./styles/home.css" />
     <link rel="stylesheet" href="./styles/resetstyles.css" />
+    <link rel="stylesheet" href="./styles/styles.css" />
+    <link rel="stylesheet" href="./styles/home.css" />
 </head>
 
 <body>
@@ -16,15 +17,20 @@
     session_start();
     ?>
     <div class="authbar">
-        <?php if (empty($_SESSION['userid'])) { ?>
-            <button class="button button--login">Login</button>
-            <button class="button button--signup">Signup</button>
-        <?php } else { ?>
-            <form class="form form--auth" action="./auth/logout.php">
-                <button class="button button--logout">Logout</button>
-            </form>
+        <a href="../../home.php"></a>
+        <div class="userInfo">
             <p><?php echo empty($_SESSION['username']) ? "" :  $_SESSION['username'] ?></p>
-        <?php } ?>
+            <?php if (empty($_SESSION['userid'])) { ?>
+                <button class="button button--login">Login</button>
+                <button class="button button--signup">Signup</button>
+            <?php } else { ?>
+                <form class="form form--auth" action="../../auth/logout.php">
+                    <button class="button button--logout">Logout</button>
+                </form>
+
+            <?php } ?>
+        </div>
+
     </div>
     <div class="page">
         <?php echo empty($_SESSION['status']) ? null : $_SESSION['status'] ?>
@@ -60,7 +66,7 @@
                         <input type="text" name="username" placeholder="username" />
                         <input type="password" name="password" placeholder="password" />
                     </div>
-                    <button type="submit">Signup</button>
+                    <button class="button" type="submit">Signup</button>
                 </form>
             </div>
         </div>
@@ -82,7 +88,7 @@
                         <input type="text" name="username" placeholder="username" />
                         <input type="password" name="password" placeholder="password" />
                     </div>
-                    <button type="submit">Login</button>
+                    <button class="button" type="submit">Login</button>
                 </form>
             </div>
         </div>
