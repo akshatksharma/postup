@@ -1,0 +1,26 @@
+.post__title {
+  font-size: 24px;
+  color: black;
+  font-weight: 700;
+}
+
+.post__user {
+  font-size: 12px;
+}
+
+.post__controls {
+  display: flex;
+}
+
+.post__addcomment .form--addcomment {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment__name {
+  font-weight: 700;
+}
+
+.comment__replies {
+  margin-left: 20px;
+}
