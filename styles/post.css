@@ -1,10 +1,19 @@
+.post {
+  --flow-space: 3rem;
+}
+
+.post__text {
+  word-break: break-all;
+}
+
 .post__title {
   font-size: 24px;
   color: black;
   font-weight: 700;
 }
 
-.post__user {
+.post__user,
+.comment__name {
   font-size: 12px;
 }
 
@@ -12,15 +21,41 @@
   display: flex;
 }
 
-.post__addcomment .form--addcomment {
-  display: flex;
-  flex-direction: column;
+.form--edit,
+.form--reply {
+  max-width: 400px;
 }
 
-.comment__name {
-  font-weight: 700;
+.form--edit textarea {
+  min-height: 150px;
+}
+
+.form--reply {
+  display: inline;
+  margin-top: 10px;
+}
+
+.form--addcomment {
+  max-width: 400px;
+}
+
+.commentText {
+  height: 100px;
 }
 
 .comment__replies {
   margin-left: 20px;
+}
+
+.comment__reply {
+  margin-top: 15px;
+}
+
+.reply__controls {
+  display: flex;
+}
+
+.reply__controls button {
+  margin-top: 0px;
+  margin-left: 4px;
 }

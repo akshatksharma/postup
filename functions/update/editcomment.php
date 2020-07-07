@@ -22,5 +22,5 @@ $stmt->bind_param('si', $comment, $commentid);
 $stmt->execute();
 $stmt->close();
 
-header('Location: ../../post.php?id=' . $postid);
+header('Location: ../../post.php?id=' . $postid . "#comments");
 exit;
