@@ -48,7 +48,7 @@ if (isset($_POST['submit']) && !empty($_SESSION['userid'])) {
 
 <body>
     <div class="authbar authbar--back">
-        <a href="../../home.php">Go back</a>
+        <a href="../../home.php">bacc</a>
         <div class="userInfo">
             <p><?php echo empty($_SESSION['username']) ? "" :  $_SESSION['username'] ?></p>
             <?php if (empty($_SESSION['userid'])) { ?>

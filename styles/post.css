@@ -59,3 +59,32 @@
   margin-top: 0px;
   margin-left: 4px;
 }
+
+.level1 {
+  margin-left: 20px;
+  border-left: 1px solid #f56565;
+  padding-left: 10px;
+}
+
+.level2 {
+  margin-left: 40px;
+  border-left: 1px solid #ed8936;
+  padding-left: 10px;
+}
+
+.level3 {
+  margin-left: 60px;
+  border-left: 1px solid #ecc94b;
+  padding-left: 10px;
+}
+
+.level4 {
+  margin-left: 80px;
+  border-left: 1px solid #48bb78;
+  padding-left: 10px;
+}
+.level5 {
+  margin-left: 100px;
+  border-left: 1px solid #4299e1;
+  padding-left: 10px;
+}

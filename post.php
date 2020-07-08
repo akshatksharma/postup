@@ -7,7 +7,6 @@ $id =  $_GET["id"];
 $_SESSION['currentPostID'] = $id;
 $loggedUser = empty($_SESSION['userid']) ? "" :  $_SESSION['userid'];
 
-
 // querying post table 
 $stmt = $mysqli->prepare("select title, link, description, username, userid, time from posts where id=?");
 
@@ -22,19 +21,49 @@ $stmt->bind_result($title, $link, $description, $username, $userid, $time);
 
 while ($stmt->fetch()) {
 }
+function show_children($parent, $level = 0)
+{
+    include "database.php";
+    $id =  $_GET["id"];
+    $sql = "select id, userid, username, comment from comments where posts_id='{$id}' AND parentid " . ($parent ? "= $parent" : "IS NULL");
+    $result = $mysqli->query($sql);
 
-// querying comment table 
-$stmt2 = $mysqli->prepare("select id, userid, username, comment from comments where posts_id='{$id}' AND parentid is NULL");
-if (!$stmt2) {
-    printf("Query Prep Failed: %s\n", $mysqli->error);
-    exit;
-}
-$stmt2->execute();
-$stmt2->bind_result($commentid, $commentUserid, $commentUsername, $comment);
+    if (!$result) {
+        printf("Query Prep Failed: %s\n", $mysqli->error);
+        exit;
+    }
+    $loggedUser = empty($_SESSION['userid']) ? "" :  $_SESSION['userid'];
 
-$result = $stmt2->get_result();
-$stmt2->close();
+    while ($row = $result->fetch_assoc()) { ?>
 
+        <div id=<?php echo $row["id"]; ?> class='comment level<?php echo $level ?>'>
+            <p class='comment__name'> <?php echo $row["username"]; ?> </p>
+            <p class='comment__text'> <?php echo $row["comment"]; ?> </p>
+
+            <?php if ($row["userid"] == $loggedUser) {
+            ?>
+                <button class="button button--tiny edit--comment">Edit</button>
+                <form method="post" action="./functions/delete/deletecomment.php?">
+                    <button type="submit" class="button button--tiny delete--comment">X</button>
+                    <input type='hidden' name='id' value='<?php echo $row["id"]; ?>' />
+                    <input type='hidden' name='userid' value='<?php echo $row["userid"]; ?>' />
+                    <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+                </form>
+            <?php }; ?>
+            <?php
+            if (!empty($_SESSION['userid'])) { ?>
+
+                <form class="form form--reply" method="post" action="./functions/create/replycomment.php">
+                    <button class="button button--tiny reply--comment">reply</button>
+                    <input type='hidden' name='id' value='<?php echo $row["id"]; ?>' />
+                    <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+                </form>
+        </div>
+<?php
+            }
+            show_children($row['id'], $level + 1);
+        };
+    }
 ?>
 
 
@@ -74,89 +103,41 @@ $stmt2->close();
         <div class="post flow">
             <div class="post__content flow">
                 <div class="post__header">
-                    <a class="post__title" href=//<?php echo htmlspecialchars($link) ?>><?php echo htmlspecialchars($title) ?> </a> <div class='post__user'>Posted by <?php echo htmlspecialchars($username); ?> at <?php echo htmlspecialchars($time) ?>
-                </div>
-            </div>
-            <div class='post__text'> <?php echo htmlspecialchars($description); ?> </div>
-            <?php if ($userid == $loggedUser) { ?>
-                <div class="post__controls">
-                    <button class="button button--small edit--post">Edit</button>
-                    <form class="form form--edit" method="post" action="./functions/delete/deletepost.php?">
-                        <button class="button button--small" type="submit" class="delete--post">Delete</button>
-                        <input type='hidden' name='userid' value='<?php echo "$userid"; ?>' />
-                        <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-                    </form>
-                </div>
-            <?php }; ?>
-
-            <div class="post__addcomment">
-                <?php if (!empty($_SESSION['userid'])) { ?>
-                    <form class="form form--addcomment" action="./functions/create/addcomment.php" method="post">
-                        <textarea name="commentText" placeholder="Comment here"></textarea>
-                        <input class="button button--small" type="submit" value="Comment">
-                        <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-                    </form>
-                <?php } else { ?>
-                    <textarea name="commentText" placeholder="Login to comment" readonly></textarea>
-                <?php } ?>
-            </div>
-        </div>
-        <div class="comments">
-            <div class="flow">
-                <h2 id="comments">Comments</h2>
-                <?php while ($row = $result->fetch_assoc()) { ?>
-                    <div id=<?php echo $row["id"]; ?> class='comment'>
-                        <p class='comment__name'> <?php echo $row["username"]; ?> </p>
-                        <p class='comment__text'> <?php echo $row["comment"]; ?> </p>
-                        <?php if (!empty($_SESSION['userid'])) { ?>
-                            <form class="form form--reply" method="post" action="./functions/create/replycomment.php">
-                                <button class="button button--tiny reply--comment">reply</button>
-                                <input type='hidden' name='id' value='<?php echo $row["id"]; ?>' />
-                                <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-                            </form>
-                            <?php if ($row["userid"] == $loggedUser) { ?>
-                                <button class="button button--tiny edit--comment">Edit</button>
-                                <form method="post" action="./functions/delete/deletecomment.php?">
-                                    <button type="submit" class="button button--tiny delete--comment">X</button>
-                                    <input type='hidden' name='id' value='<?php echo $row["id"]; ?>' />
-                                    <input type='hidden' name='userid' value='<?php echo $row["userid"]; ?>' />
-                                    <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-                                </form>
-                            <?php }; ?>
-                        <?php } ?>
-                        <div class="comment__replies">
-                            <?php
-                            $stmt3 = $mysqli->prepare("select id, userid, username, comment from comments where parentid='{$row["id"]}'");
-                            if (!$stmt3) {
-                                printf("Query Prep Failed: %s\n", $mysqli->error);
-                                exit;
-                            }
-                            $stmt3->execute();
-                            $stmt3->bind_result($commentid, $commentUserid, $commentUsername, $comment);
-
-                            while ($stmt3->fetch()) { ?>
-                                <div id=<?php echo $commentid ?> class="comment__reply">
-                                    <p class='comment__name'> <?php echo $commentUsername; ?> </p>
-                                    <p class='comment__text'> <?php echo $comment; ?> </p>
-                                    <?php if ($commentUserid == $loggedUser) { ?>
-                                        <button class="button button--tiny edit--comment">Edit</button>
-                                        <form method="post" action="./functions/delete/deletecomment.php?">
-                                            <button type="submit" class="button button--tiny delete--comment">X</button>
-                                            <input type='hidden' name='id' value='<?php echo $commentid; ?>' />
-                                            <input type='hidden' name='userid' value='<?php echo $commentUserid; ?>' />
-                                            <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
-                                        </form>
-                                    <?php }; ?>
-                                </div>
-                            <?php } ?>
-                        </div>
+                    <a class="post__title" href=<?php echo htmlspecialchars($link) ?>><?php echo htmlspecialchars($title) ?> </a>
+                    <div class='post__user'>Posted by <?php echo htmlspecialchars($username); ?> at <?php echo htmlspecialchars($time) ?>
                     </div>
-                <?php } ?>
+                </div>
+                <div class='post__text'> <?php echo htmlspecialchars($description); ?> </div>
+                <?php if ($userid == $loggedUser) { ?>
+                    <div class="post__controls">
+                        <button class="button button--small edit--post">Edit</button>
+                        <form class="form form--edit" method="post" action="./functions/delete/deletepost.php?">
+                            <button class="button button--small" type="submit" class="delete--post">Delete</button>
+                            <input type='hidden' name='userid' value='<?php echo "$userid"; ?>' />
+                            <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+                        </form>
+                    </div>
+                <?php }; ?>
 
-
+                <div class="post__addcomment">
+                    <?php if (!empty($_SESSION['userid'])) { ?>
+                        <form class="form form--addcomment" action="./functions/create/addcomment.php" method="post">
+                            <textarea name="commentText" placeholder="Comment here"></textarea>
+                            <input class="button button--small" type="submit" value="Comment">
+                            <input type="hidden" name="token" value="<?php echo $_SESSION['token']; ?>" />
+                        </form>
+                    <?php } else { ?>
+                        <textarea name="commentText" placeholder="Login to comment" readonly></textarea>
+                    <?php } ?>
+                </div>
+            </div>
+            <div class="comments">
+                <div class="flow">
+                    <h2 id="comments">Comments</h2>
+                    <?php show_children(0); ?>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 
     <div class="modal modal--signup">
